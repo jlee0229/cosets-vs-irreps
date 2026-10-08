@@ -1,0 +1,32 @@
+
+Aff(F_11), |G| = 110, p^2 = 121
+  a-part alone                         neurons   20  acc 0.0000  min margin   +0.000  margin/cost +0.000e-3
+  plain, 1 coordinate(s) + a-part      neurons   42  acc 1.0000  min margin   +1.000  margin/cost +0.164e-3
+  plain, 2 coordinate(s) + a-part      neurons   64  acc 1.0000  min margin   +2.000  margin/cost +0.214e-3
+  plain, 5 coordinate(s) + a-part      neurons  130  acc 1.0000  min margin   +5.000  margin/cost +0.261e-3
+  plain, 11 coordinate(s) + a-part     neurons  262  acc 1.0000  min margin  +20.000  margin/cost +0.517e-3
+  twisted, K=4, one frequency + a-part neurons   60  acc 0.1628  min margin   -0.351  margin/cost -0.053e-3
+  twisted, K=6, one frequency + a-part neurons   80  acc 1.0000  min margin   +0.013  margin/cost +0.002e-3
+  twisted, K=8, one frequency + a-part neurons  100  acc 1.0000  min margin   +0.030  margin/cost +0.003e-3
+  twisted, K=12, one frequency + a-part neurons  140  acc 1.0000  min margin   +0.054  margin/cost +0.004e-3
+  twisted, K=8, all 5 frequencies + a-part neurons  420  acc 1.0000  min margin   +1.000  margin/cost +0.025e-3
+  trained aff11_wu100k_m128_seed1      neurons  128  acc 1.0000  min margin   +0.387  margin/cost +0.052e-3
+  trained aff11_wu100k_m128_seed2      neurons  128  acc 1.0000  min margin   +1.128  margin/cost +0.151e-3
+  trained aff11_wu100k_m128_seed3      neurons  128  acc 0.9999  min margin   -0.338  margin/cost -0.046e-3
+  trained aff11_wu100k_m128_seed4      neurons  128  acc 1.0000  min margin   +0.156  margin/cost +0.021e-3
+  trained aff11_wu100k_m128_seed5      neurons  128  acc 1.0000  min margin   +0.610  margin/cost +0.085e-3
+  trained aff11_wu_m128_seed2          neurons  128  acc 1.0000  min margin   +0.215  margin/cost +0.029e-3
+
+Aff(F_13), |G| = 156, p^2 = 169
+  a-part alone                         neurons   24  acc 0.0000  min margin   +0.000  margin/cost +0.000e-3
+  plain, 1 coordinate(s) + a-part      neurons   50  acc 1.0000  min margin   +1.000  margin/cost +0.089e-3
+  plain, 2 coordinate(s) + a-part      neurons   76  acc 1.0000  min margin   +2.000  margin/cost +0.116e-3
+  plain, 6 coordinate(s) + a-part      neurons  180  acc 1.0000  min margin   +6.000  margin/cost +0.146e-3
+  plain, 13 coordinate(s) + a-part     neurons  362  acc 1.0000  min margin  +24.000  margin/cost +0.290e-3
+  twisted, K=4, one frequency + a-part neurons   72  acc 0.1514  min margin   -0.363  margin/cost -0.031e-3
+  twisted, K=6, one frequency + a-part neurons   96  acc 1.0000  min margin   +0.006  margin/cost +0.000e-3
+  twisted, K=8, one frequency + a-part neurons  120  acc 1.0000  min margin   +0.018  margin/cost +0.001e-3
+  twisted, K=12, one frequency + a-part neurons  168  acc 1.0000  min margin   +0.033  margin/cost +0.001e-3
+  twisted, K=8, all 6 frequencies + a-part neurons  600  acc 1.0000  min margin   +1.000  margin/cost +0.012e-3
+  trained aff13_wu100k_m256_seed1      neurons  256  acc 1.0000  min margin   +1.426  margin/cost +0.130e-3
+  trained aff13_wu100k_m256_seed2      neurons  256  acc 1.0000  min margin   +0.555  margin/cost +0.052e-3
