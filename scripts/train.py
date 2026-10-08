@@ -19,7 +19,9 @@ def main():
     ap.add_argument("--seed", type=int, required=True); ap.add_argument("--hidden", type=int, default=128); ap.add_argument("--embed", type=int, default=256)
     ap.add_argument("--epochs", type=int); ap.add_argument("--frac", type=float, default=0.4); ap.add_argument("--out", required=True); ap.add_argument("--log_every", type=int, default=100)
     ap.add_argument("--device", default="mps" if torch.backends.mps.is_available() else "cpu")
+    ap.add_argument("--act", choices=["relu", "absq"], default="relu"); ap.add_argument("--q", type=float, default=2.0, help="exponent for --act absq: |t|^q")
     a = ap.parse_args(); out = Path(a.out); out.mkdir(parents=True, exist_ok=True)
+    act = torch.relu if a.act == "relu" else (lambda t: t.abs() ** a.q)
     T = torch.tensor(group_table(a.group)); N = len(T); E, m = a.embed, a.hidden
     # data split exactly as Chughtai: all pairs in row-major order, randperm with the seed, first frac -> train
     X, Y = torch.meshgrid(torch.arange(N), torch.arange(N), indexing="ij"); X, Y = X.reshape(-1), Y.reshape(-1); Z = T[X, Y]
@@ -38,7 +40,7 @@ def main():
     def logits(idx):
         # identical to relu(cat(W_x[x], W_y[y]) @ W) @ W_U, but the (N x m) side-embeddings are formed once per step
         Ex = W_x @ W[:E]; Ey = W_y @ W[E:]
-        return torch.relu(Ex[X[idx]] + Ey[Y[idx]]) @ W_U
+        return act(Ex[X[idx]] + Ey[Y[idx]]) @ W_U
     curve = []; t0 = time.time()
     for ep in range(epochs + 1):
         if ep % a.log_every == 0 or ep == epochs:
@@ -52,7 +54,7 @@ def main():
         opt.zero_grad(set_to_none=True); loss = torch.nn.functional.cross_entropy(logits(tr), Z[tr]); loss.backward(); opt.step()
     sd = {k: v.detach().cpu() for k, v in zip(["W_x", "W_y", "W", "W_U"], params)}
     torch.save(sd, out / "model.pt"); json.dump(curve, open(out / "curve.json", "w"))
-    json.dump(dict(group=a.group, recipe=a.recipe, seed=a.seed, embed=E, hidden=m, epochs=epochs, frac=a.frac, n=N, final=curve[-1]), open(out / "cfg.json", "w"), indent=1)
+    json.dump(dict(group=a.group, recipe=a.recipe, seed=a.seed, embed=E, hidden=m, epochs=epochs, frac=a.frac, n=N, act=a.act, q=a.q if a.act == "absq" else None, final=curve[-1]), open(out / "cfg.json", "w"), indent=1)
     print(f"done {a.group} {a.recipe} seed{a.seed}: test_acc={curve[-1]['test_acc']:.4f} in {curve[-1]['t']:.0f}s -> {out}")
 
 if __name__ == "__main__": main()
