@@ -1,0 +1,414 @@
+\documentclass[11pt]{article}
+\usepackage[margin=1in]{geometry}
+\usepackage{amsmath,amssymb,amsthm}
+\usepackage{booktabs}
+\usepackage{array}
+\usepackage{microtype}
+\usepackage{xcolor}
+\usepackage{hyperref}
+\hypersetup{colorlinks=true,linkcolor=blue!50!black,citecolor=blue!50!black,urlcolor=blue!50!black}
+
+\newtheorem{proposition}{Proposition}
+\newtheorem{lemma}{Lemma}
+\theoremstyle{remark}
+\newtheorem{remark}{Remark}
+
+\newcommand{\F}{\mathbb{F}}
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\Aff}{\mathrm{Aff}}
+\newcommand{\relu}{\mathrm{ReLU}}
+\newcommand{\cost}{C}
+\newcommand{\gam}{\gamma}
+\newcommand{\abs}[1]{\lvert #1 \rvert}
+\newcommand{\norm}[1]{\lVert #1 \rVert}
+\newcommand{\ind}[1]{\mathbf{1}[#1]}
+
+\title{Margins of coset and clock circuits on $\Aff(\F_p)$}
+\author{Jaeho Lee}
+\date{October 2026}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+A one-hidden-layer ReLU network trained with weight decay on multiplication in the affine group $\Aff(\F_p)$ organises its
+neurons by cosets of point stabilisers (the ``plain'' circuit) rather than by the Fourier basis of the induced representation
+(the ``twisted'' or clock circuit). Weight decay selects for margin per unit weight norm, so the question is which circuit has
+the larger normalised margin. We compute the margin and the norm cost of both hand-built circuits in closed form, verify every
+formula by brute force at $p = 7, 11, 13$, and find: the plain circuit's normalised margin scales as $p^{-7/2}$, the clock's as
+$p^{-3}$, but with a constant $23.6/\sqrt{p}$ smaller, so the clock mechanism would overtake the plain one only near $p \approx 555$,
+and the complete clock circuit never does because the unit part it needs is itself a coordinate circuit. The gap factorises into
+the ReLU attenuation of the clock's product term ($3\pi/2$), its worst-case input factor ($3\pi/4$), the cost of silencing a neuron
+off its fibre ($\sqrt{3}$), and the plain circuit's own gap-to-norm handicap ($1.22/\sqrt{p}$), the only $p$-dependent factor.
+\end{abstract}
+
+\section{Setting}
+
+\paragraph{Group.} $G = \Aff(\F_p) = \{x : j \mapsto a_x j + b_x \mid a_x \in \F_p^{*},\, b_x \in \F_p\}$, $\abs{G} = p(p-1)$.
+Composition is $(xy)(j) = x(y(j))$, so $a_{xy} = a_x a_y$ and $b_{xy} = a_x b_y + b_x$. We write $x^{-1}(t) = (t - b_x)/a_x$ for the
+point that $x$ sends to $t$.
+
+\paragraph{Network.} Hidden neuron $k$ has pre-activation $L_k(x) + R_k(y)$ with $L_k, R_k : G \to \R$ arbitrary (one-hot embeddings
+make every function available, and a constant plays the role of a bias). The logit of output $z$ is
+\[
+f_z(x,y) = \sum_k w_k(z)\, \relu\bigl(L_k(x) + R_k(y)\bigr), \qquad w_k : G \to \R .
+\]
+
+\paragraph{Margin and cost.} The margin is $\gam = \min_{(x,y)} \min_{z \ne xy} \bigl(f_{xy}(x,y) - f_z(x,y)\bigr)$. For a two-layer
+ReLU network with $L^2$ weight decay, once the in and out norms of each neuron balance, the penalty equals
+\[
+\cost = \sum_k \norm{(L_k, R_k)}_2 \, \norm{w_k}_2, \qquad \norm{(L_k,R_k)}_2^2 = \sum_{g \in G} L_k(g)^2 + \sum_{g \in G} R_k(g)^2 .
+\]
+The ratio $\gam/\cost$ is scale invariant and is the quantity that margin maximisation under weight decay drives up
+(Morwani et al.\ 2023). We compare it between circuits.
+
+\paragraph{Notation.} For a profile $F : \F_p \to \R$ let $g_F$ be its smallest gap between distinct values and
+$S_F = \sum_j F(j)^2$; likewise $g_f$, $S_f$ for a profile $f$ on $\F_p^{*}$. With the evenly spaced centred choices
+$F(j) = j - \tfrac{p-1}{2}$ and $f$ taking the values $\{-\tfrac{p-2}{2}, \dots, \tfrac{p-2}{2}\}$ in some fixed order,
+\[
+g_F = g_f = 1, \qquad S_F = \frac{p(p^2-1)}{12}, \qquad S_f = \frac{p(p-1)(p-2)}{12},
+\]
+and we abbreviate $a_p = \sqrt{2 S_F} = \sqrt{p(p^2-1)/6}$, $b_p = \sqrt{2 S_f} = \sqrt{p(p-1)(p-2)/6}$.
+
+\section{The plain coordinate circuit}
+
+\subsection{Construction}
+
+Fix a set $J \subseteq \F_p$ of \emph{coordinates}. For every $j_0 \in J$ and every value $c \in \F_p$ there is a pair of neurons
+\[
+L(x) = \pm F\bigl(x^{-1}(c)\bigr), \qquad R(y) = \mp F\bigl(y(j_0)\bigr), \qquad w(z) = -\ind{z(j_0) = c},
+\]
+so the pair contributes $-\abs{F(x^{-1}(c)) - F(y(j_0))}$ to the logits of every $z$ with $z(j_0) = c$. Since $x^{-1}(c) = y(j_0)$
+exactly when $(xy)(j_0) = c$, the correct output receives zero from every pair. The \emph{unit part} fixes $a_z$: for every
+$v \in \F_p^{*}$ a pair with $L(x) = \pm f(a_x)$, $R(y) = \mp f(v / a_y)$, $w(z) = -\ind{a_z = v}$. The circuit has $2p\abs{J} + 2(p-1)$
+neurons.
+
+\subsection{The logit gap}
+
+For $z \ne xy$,
+\begin{equation}\label{eq:gap}
+\Delta(x,y,z) = f_{xy}(x,y) - f_z(x,y) = \sum_{j_0 \in J} \abs{F\bigl(x^{-1}(z(j_0))\bigr) - F\bigl(y(j_0)\bigr)}
+ + \abs{f(a_x) - f(a_z / a_y)},
+\end{equation}
+and the key identity, from $x^{-1}(t) = (t - b_x)/a_x$, is
+\begin{equation}\label{eq:shift}
+x^{-1}\bigl(z(j_0)\bigr) - y(j_0) = \frac{z(j_0) - (xy)(j_0)}{a_x} = \frac{(a_z - a_{xy})\, j_0 + (b_z - b_{xy})}{a_x} \pmod p .
+\end{equation}
+With $F(j) = j - \tfrac{p-1}{2}$ each coordinate term is the ordinary integer distance between representatives in
+$\{0, \dots, p-1\}$, not the cyclic distance; this is what produces the edge effect below.
+
+\subsection{Exact margin}
+
+\begin{proposition}\label{prop:plain}
+With evenly spaced $F$ and $f$ at the same scale,
+\begin{align*}
+\gam(J) &= \min\bigl(\abs{J}\, g_F,\; (\abs{J}-1)\, g_F + g_f\bigr) = \abs{J} & (1 \le \abs{J} \le p-1), \\
+\gam(J) &= 2(p-1)\, g_F = 2(p-1) & (\abs{J} = p,\ p \ge 7).
+\end{align*}
+\end{proposition}
+
+\begin{proof}[Proof sketch]
+\emph{Case A: $a_z = a_{xy}$, $b_z \ne b_{xy}$.} The unit term vanishes and by \eqref{eq:shift} the shift
+$\delta = (b_z - b_{xy})/a_x$ is the same for every $j_0$. Writing $\delta' \in \{1, \dots, p-1\}$, the coordinate term is $\delta'$
+when $y(j_0) + \delta' \le p-1$ and $p - \delta'$ when it wraps. The minimum is $\delta' = 1$ (or $p-1$) with $y(j_0) \ne p-1$ for all
+$j_0 \in J$, which is possible iff $\abs{J} \le p-1$, giving $\abs{J} g_F$. For $\abs{J} = p$ exactly one coordinate wraps, and the
+total is $(p-1) g_F + (p-1) g_F = 2(p-1) g_F$; any other $\delta'$ gives $\sum_r \abs{F(r+\delta') - F(r)} \ge 2(\max F - \min F) = 2(p-1) g_F$
+over a full cycle, so $\delta' = \pm 1$ is the worst.
+
+\emph{Case B: $a_z \ne a_{xy}$.} The unit term is at least $g_f$. The maps $z$ and $xy$ agree at exactly one point
+$j^{*} = (b_{xy} - b_z)/(a_z - a_{xy})$, so every other coordinate contributes at least $g_F$ and
+$\Delta \ge (\abs{J} - \ind{j^{*} \in J})\, g_F + g_f \ge (\abs{J}-1) g_F + g_f$, which is attained. For $\abs{J} = p$ the shift in
+\eqref{eq:shift} runs over all of $\F_p^{*}$ as $j_0$ runs over $\F_p \setminus \{j^{*}\}$, so
+$\Delta \ge g_F \sum_{d=1}^{p-1} \min(d, p-d) + g_f = g_F\,\tfrac{p^2-1}{4} + g_f$, which exceeds $2(p-1) g_F$ for $p \ge 7$
+(brute force: $13$ vs $12$ at $p=7$, $31$ vs $20$ at $p=11$, $43$ vs $24$ at $p=13$).
+\end{proof}
+
+\begin{remark}
+The all-coordinates margins $20$ ($p=11$) and $24$ ($p=13$) are $2(p-1)$, not $p-1$ or $p$: the worst case is case A with
+$x = y = \mathrm{id}$ and $z$ a translation by one, which disagrees with $xy$ by one step on every coordinate, and the coordinate
+where $y(j_0) = p-1$ pays $\abs{F(0) - F(p-1)} = p-1$ instead of $1$ because $F$ is a line, not a circle. The last coordinate
+therefore doubles the margin; this is a property of the one-dimensional profile, not of the circuit.
+\end{remark}
+
+\begin{remark}
+For $\abs{J} \ge 2$ the unit part is not needed for correctness (two coordinates determine an affine map), and
+$\gam = (\abs{J}-1) g_F$ without it. At $\abs{J} = p$ it is dead weight: the margin is unchanged and the cost drops, so
+$\gam/\cost$ rises from $0.517 \times 10^{-3}$ to $0.557 \times 10^{-3}$ at $p = 11$.
+\end{remark}
+
+\subsection{Exact cost}
+
+A coordinate neuron's side functions $x \mapsto F(x^{-1}(c))$ and $y \mapsto F(y(j_0))$ take each value of $F$ on exactly $p-1$
+group elements, so $\norm{L}^2 = \norm{R}^2 = (p-1) S_F$, and $w$ is the indicator of a set of size $p-1$. A unit neuron's sides take
+each value of $f$ on $p$ elements and its readout indicates a set of size $p$. Hence
+\begin{equation}\label{eq:cost}
+\cost(J) = 2p\abs{J}\,(p-1)\,a_p\, g_F + 2(p-1)\, p\, b_p\, g_f = 2p(p-1)\bigl[\abs{J}\, a_p + b_p\bigr] \quad (g_F = g_f = 1).
+\end{equation}
+
+\subsection{Normalised margin and its scaling}
+
+\begin{equation}\label{eq:plainratio}
+\frac{\gam}{\cost} = \frac{\abs{J}}{2p(p-1)\,[\abs{J}\, a_p + b_p]} \quad (\abs{J} \le p-1), \qquad
+\frac{\gam}{\cost} = \frac{1}{p\,[p\, a_p + b_p]} \quad (\abs{J} = p).
+\end{equation}
+
+\begin{table}[h]\centering
+\begin{tabular}{c c c c c c}
+\toprule
+$p$ & $\abs{J}=1$ & $\abs{J}=2$ & $\abs{J}=\lfloor p/2 \rfloor$ & $\abs{J}=p-1$ & $\abs{J}=p$ \\
+\midrule
+7  & 0.889 & 1.140 & 1.259 & 1.406 & 2.450 \\
+11 & 0.164 & 0.214 & 0.261 & 0.282 & 0.517 \\
+13 & 0.089 & 0.116 & 0.146 & 0.156 & 0.290 \\
+\bottomrule
+\end{tabular}
+\caption{$\gam/\cost$ in units of $10^{-3}$ for the plain circuit with evenly spaced $F$ and $f$. All entries agree with the
+brute-force evaluation of the circuit on every input pair; \eqref{eq:cost} reproduces the brute-force cost to $10^{-10}$.}
+\end{table}
+
+Since $a_p, b_p \sim p^{3/2}/\sqrt{6}$, every $\abs{J}$ scales as $p^{-7/2}$ and only the constant moves:
+$\tfrac{\sqrt{6}}{4}$ at $\abs{J} = 1$, $\tfrac{\sqrt{6}}{2}$ at $\abs{J} = p-1$, $\sqrt{6}$ at $\abs{J} = p$. The exponent is
+(number of neuron pairs $p^2$) $\times$ (per-neuron norm $p^{5/2}$) $/$ (margin $2p$).
+
+\subsection{The optimal profile}
+
+\begin{lemma}
+Among centred injective $F$ with smallest gap $g_F$, the evenly spaced profile minimises $S_F$, hence maximises $g_F / \norm{F}$.
+\end{lemma}
+\begin{proof}
+For centred $F$ with sorted values $v_1 < \dots < v_p$, $S_F = \tfrac{1}{p}\sum_{i<k}(v_k - v_i)^2 \ge \tfrac{g_F^2}{p}\sum_{i<k}(k-i)^2
+= g_F^2\, \tfrac{p(p^2-1)}{12}$, with equality iff the values are evenly spaced with gap $g_F$.
+\end{proof}
+
+For $\abs{J} = 1$ the margin is exactly $\min(g_F, g_f)$, so the ratio $\min(g_F,g_f)/(2p(p-1)[a_p g_F + b_p g_f])$ is maximised at
+$g_F = g_f$: any imbalance adds cost without margin. The same holds for $2 \le \abs{J} \le p-1$, because the kink of
+$\min(\abs{J} g_F, (\abs{J}-1) g_F + g_f)$ is the optimum when $b_p / a_p = \sqrt{(p-2)/(p+1)} < \abs{J}/(\abs{J}-1)$; for $\abs{J} = p$
+the optimum is $g_f = 0$. The structural inefficiency of the plain circuit is now visible: $\norm{F} \sim p^{3/2} g_F$ while only
+the smallest gap enters the margin.
+
+\section{The twisted clock circuit}
+
+\subsection{Construction and separability}
+
+The $(p-1)$-dimensional irrep of $G$ is induced from a non-trivial character of the translation subgroup, so its ``twisted'' basis
+functions are supported on one fibre $a_x = \alpha$ and are a single Fourier mode in $b_x$. On that fibre the translation part of
+the product is $b_{xy} = b_x + \alpha b_y$: modular addition with $y$ rescaled by $\alpha$. The clock circuit has, for every fibre
+$\alpha \in \F_p^{*}$, frequency $k$ in a set $\mathcal{F} \subseteq \{1, \dots, \tfrac{p-1}{2}\}$ and phase $\phi_i = 2\pi i / K$,
+one neuron
+\[
+L(x) = \begin{cases} \cos(u + \phi_i) & a_x = \alpha \\ -1 & a_x \ne \alpha \end{cases}, \quad
+R(y) = \cos(v + \phi_i), \quad w(z) = \cos(\theta + 2\phi_i),
+\]
+with $u = 2\pi k b_x / p$, $v = 2\pi k \alpha b_y / p$, $\theta = 2\pi k b_z / p$, so that $u + v = 2\pi k b_{xy}/p$. Off the fibre
+$L + R \le 0$ and the ReLU is silent. The same unit part as before fixes $a_z$. Because the readout depends on $b_z$ only and the
+unit part on $a_z$ only, $f_z = \Lambda(b_z) + U(a_z)$ and
+\[
+\gam = \min(\gam_{\mathrm{clock}}, \gam_{\mathrm{unit}}), \qquad \gam_{\mathrm{unit}} = g_f = 1,
+\]
+where $\gam_{\mathrm{clock}}$ is the margin over wrong $z$ with $a_z = a_{xy}$. Every fibre sees the same structure, so the clock
+margin can be computed on one fibre.
+
+\subsection{The phase sum}
+
+Write $\relu(\cos(u+\phi) + \cos(v+\phi)) = 2\abs{c}\,\relu(\cos(\psi + \phi + \pi s))$ with $c = \cos\tfrac{u-v}{2}$,
+$\psi = \tfrac{u+v}{2}$, $s = \ind{c < 0}$. The Fourier series of the rectified cosine is
+\[
+\relu(\cos t) = \sum_{n \ge 0} a_n \cos(nt), \qquad a_0 = \tfrac{1}{\pi},\quad a_1 = \tfrac12,\quad
+a_{2m} = \frac{2}{\pi}\,\frac{(-1)^{m+1}}{4m^2 - 1},\quad a_{2m+1} = 0\ (m \ge 1),
+\]
+so $a_2 = \tfrac{2}{3\pi}$, $a_4 = -\tfrac{2}{15\pi}$, $a_6 = \tfrac{2}{35\pi}$. The phase sum identity
+\[
+\sum_{i=0}^{K-1} \cos(n\phi_i + A)\cos(2\phi_i + B) = \frac{K}{2}\Bigl[\cos(A-B)\,\ind{n \equiv 2 \bmod K} + \cos(A+B)\,\ind{n \equiv -2 \bmod K}\Bigr]
+\]
+gives the exact finite-$K$ result
+\begin{equation}\label{eq:SK}
+\begin{split}
+S_K(u,v,\theta) &= \sum_i \relu\bigl(\cos(u+\phi_i)+\cos(v+\phi_i)\bigr)\cos(\theta + 2\phi_i) \\
+&= K \abs{\cos\tfrac{u-v}{2}} \sum_{m \ge 1} a_{2m}\Bigl[\cos\bigl(m(u+v) - \theta\bigr)\,\ind{2m \equiv 2 \bmod K} \\
+&\hspace{9em} + \cos\bigl(m(u+v) + \theta\bigr)\,\ind{2m \equiv -2 \bmod K}\Bigr]
+\end{split}
+\end{equation}
+(plus an $a_1$ term if $K \mid 3$ and an $a_0$ term if $K \mid 2$), the sign $s$ dropping out of the $n = 2$ term. For $K \to \infty$ only
+$m = 1$ survives:
+\begin{equation}\label{eq:Sinf}
+S_\infty(u,v,\theta) = c_K \abs{\cos\tfrac{u-v}{2}}\cos(u + v - \theta), \qquad c_K = K a_2 = \frac{2K}{3\pi} = 0.2122\,K .
+\end{equation}
+The main term has exactly this coefficient for every $K \ge 5$; the only finite-$K$ effects are the aliased harmonics. The factor
+$\abs{\cos\tfrac{u-v}{2}} = \abs{\cos(\pi k(b_x - \alpha b_y)/p)}$ depends on the input and on $k$, so margins are taken at the worst
+input.
+
+\subsection{Aliasing}
+
+Harmonic $n$ of $\relu(\cos t)$ reaches the readout iff $n \equiv \pm 2 \pmod K$.
+
+\begin{table}[h]\centering
+\begin{tabular}{c l l l}
+\toprule
+$K$ & surviving harmonics & lowest alias, size relative to $a_2$ & outcome \\
+\midrule
+3  & $2$; $1, 4, 8, 10, \dots$ & $n=1$: $a_1/a_2 = 3\pi/4 = 2.36$ & fails \\
+4  & $2$ in both channels; $6, 10, \dots$ & the main term aliases with itself & fails \\
+6  & $2$; $4, 8, 10, \dots$ & $n=4$: $1/5$ & works, marginal \\
+8  & $2$; $6, 10, 14, \dots$ & $n=6$: $3/35 = 0.086$ & works \\
+12 & $2$; $10, 14, 22, \dots$ & $n=10$: $3/99 = 0.030$ & works \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+At $K = 4$ both channels of $n = 2$ survive and $S_4 = 8\abs{c}\sum_{m\ \mathrm{odd}} a_{2m}\cos(m(u+v))\cos\theta$: the logit is a
+function of $u+v$ times $\cos\theta$, the argmax over $b_z$ can only be $0$ or $(p \pm 1)/2$, and the accuracy is $0.18$ at $p = 11$.
+For even $K \ge 6$ the lowest alias is $n = K - 2$ with relative size $3/((K-2)^2 - 1)$. An alias of relative size $\varepsilon$ damages
+a single-frequency margin by about $\varepsilon p / \pi$ (its variation between adjacent $b_z$ is $2\varepsilon\sin(\pi/p)$ against a main-term
+gap of $1 - \cos(2\pi/p)$): $55\%$, $21\%$, $6\%$ at $K = 6, 8, 12$ for $p = 11$. With all frequencies the gap is $O(p)$ and the aliases
+cost only $8\%$ ($K=8$) and $2.5\%$ ($K=12$).
+
+\subsection{One frequency}
+
+On a fibre with $m = b_x - \alpha b_y$, $\Lambda(b_z) = c_K \abs{\cos(\pi k m / p)}\cos(2\pi k(b_{xy} - b_z)/p)$ (alias-free). The gap to the
+nearest wrong $b_z$ is $c_K\abs{\cos(\pi k m/p)}(1 - \cos(2\pi/p))$, and the worst input has $km \equiv (p \pm 1)/2$, where the factor is
+$\cos\tfrac{\pi(p-1)}{2p} = \sin\tfrac{\pi}{2p}$. Hence
+\begin{equation}
+\gam_{\mathrm{clock}}^{(1)} = c_K\,\bigl(1 - \cos\tfrac{2\pi}{p}\bigr)\sin\tfrac{\pi}{2p} \approx \frac{2K\pi^2}{3p^3}.
+\end{equation}
+Per neuron, $\norm{L}^2 = p(p-2) + p/2$ (the silencing constant sits on the $p(p-2)$ off-fibre elements), $\norm{R}^2 = \norm{w}^2 = p(p-1)/2$,
+so the product of norms is $\tfrac{p}{2}\sqrt{(3p-4)(p-1)}$, and with $(p-1)K\abs{\mathcal{F}}$ neurons
+\begin{equation}
+\cost_{\mathrm{clock}} = (p-1)\,\abs{\mathcal{F}}\,K\,\frac{p}{2}\sqrt{(3p-4)(p-1)},
+\end{equation}
+and for one frequency, with the unit cost dropped,
+\begin{equation}
+\frac{\gam}{\cost} \approx \frac{4\pi^2}{3\sqrt{3}}\,p^{-6} = 7.6\,p^{-6}.
+\end{equation}
+
+\subsection{All frequencies}
+
+With $\mathcal{F} = \{1, \dots, \tfrac{p-1}{2}\}$, $\Lambda(b_z) = c_K\sum_k \abs{\cos(\pi k m/p)}\cos(2\pi k d/p)$ with $d = b_{xy} - b_z$.
+If $m = 0$ all factors are $1$ and the Dirichlet kernel $\sum_k \cos(2\pi k d/p) = (p\,\delta_{d,0} - 1)/2$ gives a gap of $c_K p/2$. If
+$m \ne 0$ the factors $\{\abs{\cos(\pi k m/p)}\}_k$ are a permutation of $\{\cos(\pi j/p)\}_{j=1}^{(p-1)/2}$, so with $e = d/m$ the gap is
+$c_K\, T(e)$, $T(e) = \sum_{j=1}^{(p-1)/2}\cos(\pi j/p)\bigl(1 - \cos(2\pi j e/p)\bigr)$, minimised at $e = \pm 1$ for every $p$ tested, with
+\begin{equation}
+T(1) = \frac14\Bigl[\csc\frac{\pi}{2p} + \csc\frac{3\pi}{2p}\Bigr] = \frac{2p}{3\pi} + O(p^{-1}), \qquad
+\gam_{\mathrm{clock}}^{(\mathrm{all})} = c_K\, T(1) \approx \frac{4Kp}{9\pi^2} = 0.045\,Kp .
+\end{equation}
+The effective worst-case attenuation is therefore $T(1)/(p/2) \to 4/(3\pi) = 0.42$, a constant, rather than the $\sin(\pi/2p)$ of a single
+frequency. The margin of the circuit as built is $\min(\gam_{\mathrm{clock}}, 1)$, and since $\gam_{\mathrm{clock}} > 1$ at $p \ge 7$, the
+reported margin $1.000$ is the unit part's. Rebalancing the two parts (scaling each to margin $1$) gives
+\begin{equation}
+\Bigl(\frac{\gam}{\cost}\Bigr)_{\mathrm{rebalanced}} = \frac{1}{\cost_{\mathrm{clock}}/\gam_{\mathrm{clock}} + \cost_{\mathrm{unit}}/\gam_{\mathrm{unit}}}.
+\end{equation}
+
+\begin{table}[h]\centering
+\begin{tabular}{c c c c c c c c c}
+\toprule
+$p$ & $K$ & freqs & $\gam$ & $\gam_{\mathrm{clock}}$ (alias-free) & $\cost_{\mathrm{clock}}$ & $\cost_{\mathrm{unit}}$ & $\gam/\cost$ as built & rebalanced \\
+\midrule
+7  & 4  & 1   & $-0.35$ & $-0.35$ (0.071) & 848 & 497 & fails & fails \\
+7  & 6  & 1   & 0.067 & 0.067 (0.107) & 1273 & 497 & 0.038 & 0.051 \\
+7  & 8  & 1   & 0.122 & 0.122 (0.142) & 1697 & 497 & 0.055 & 0.069 \\
+7  & 8  & 3   & 1.000 & 2.387 (2.588) & 5090 & 497 & 0.179 & 0.380 \\
+11 & 4  & 1   & $-0.35$ & $-0.35$ (0.019) & 3747 & 2826 & fails & fails \\
+11 & 6  & 1   & 0.013 & 0.013 (0.029) & 5620 & 2826 & 0.0015 & 0.0023 \\
+11 & 8  & 1   & 0.030 & 0.030 (0.038) & 7493 & 2826 & 0.0029 & 0.0040 \\
+11 & 12 & 1   & 0.054 & 0.054 (0.058) & 11239 & 2826 & 0.0038 & 0.0047 \\
+11 & 8  & 5   & 1.000 & 3.694 (4.004) & 37465 & 2826 & 0.025 & 0.077 \\
+11 & 12 & 5   & 1.000 & 5.855 (6.006) & 56197 & 2826 & 0.017 & 0.081 \\
+13 & 8  & 1   & 0.018 & 0.018 (0.023) & 12788 & 5276 & 0.0010 & 0.0014 \\
+13 & 8  & 6   & 1.000 & 4.353 (4.718) & 76729 & 5276 & 0.012 & 0.044 \\
+13 & 12 & 6   & 1.000 & 6.899 (7.077) & 115094 & 5276 & 0.008 & 0.046 \\
+\bottomrule
+\end{tabular}
+\caption{Twisted clock circuit, brute force over all pairs; $\gam/\cost$ in units of $10^{-3}$. The closed forms reproduce every
+entry to the digits shown.}
+\end{table}
+
+\subsection{Scaling and where the gap comes from}
+
+Cost per unit of margin at leading order ($K$ cancels in the clock; alias-free):
+\begin{align*}
+\text{plain coordinates, } \abs{J} = p: &\quad \cost/\gam = p^2 a_p \sim \tfrac{1}{\sqrt6}\, p^{7/2} = 0.408\, p^{3.5}, \\
+\text{clock part, all frequencies:} &\quad \cost_{\mathrm{clock}}/\gam_{\mathrm{clock}} \sim \tfrac{9\sqrt3\,\pi^2}{16}\, p^3 = 9.62\, p^{3}, \\
+\text{unit part (both circuits):} &\quad \cost_{\mathrm{unit}}/\gam_{\mathrm{unit}} = 2p(p-1)b_p \sim \tfrac{2}{\sqrt6}\, p^{7/2} = 0.816\, p^{3.5}, \\
+\text{clock part, one frequency:} &\quad \cost_{\mathrm{clock}}/\gam_{\mathrm{clock}} \sim \tfrac{3\sqrt3}{4\pi^2}\, p^6 = 0.13\, p^{6}.
+\end{align*}
+Hence $\gam/\cost \sim \sqrt6\, p^{-7/2}$ for the plain circuit, $\sim 0.104\, p^{-3}$ for the clock mechanism alone, and for the
+complete rebalanced twisted circuit $1/(9.62\,p^3 + 0.816\,p^{3.5}) \to \tfrac{\sqrt6}{2}\, p^{-7/2}$, half of the plain value, because
+the unit part it needs is itself a coordinate circuit on $\F_p^{*}$. The clock mechanism overtakes the plain coordinates only at
+$p \approx (9.62/0.408)^2 = 555$.
+
+\begin{table}[h]\centering
+\begin{tabular}{r c c c c}
+\toprule
+$p$ & plain $\abs{J}=p$ & twisted as built ($K=8$) & twisted rebalanced & clock part alone \\
+\midrule
+11   & $5.2\times10^{-4}$  & $2.5\times10^{-5}$  & $8.2\times10^{-5}$  & $1.1\times10^{-4}$ \\
+13   & $2.9\times10^{-4}$  & $1.2\times10^{-5}$  & $4.6\times10^{-5}$  & $6.2\times10^{-5}$ \\
+31   & $1.4\times10^{-5}$  & $3.3\times10^{-7}$  & $2.6\times10^{-6}$  & $3.9\times10^{-6}$ \\
+101  & $2.3\times10^{-7}$  & $2.8\times10^{-9}$  & $5.6\times10^{-8}$  & $1.0\times10^{-7}$ \\
+547  & $6.4\times10^{-10}$ & $3.2\times10^{-12}$ & $2.1\times10^{-10}$ & $6.4\times10^{-10}$ \\
+\bottomrule
+\end{tabular}
+\caption{Leading-order $\gam/\cost$ of the four mechanisms. The plain circuit leads by $21\times$ and $24\times$ as built at
+$p = 11, 13$, by $6.3\times$ after rebalancing.}
+\end{table}
+
+The ratio of the clock's cost per margin to the plain coordinates' factorises as
+\[
+\underbrace{\tfrac{3\pi}{2}}_{\text{ReLU attenuation}}\ \times\ \underbrace{\tfrac{3\pi}{4}}_{\text{worst-case } \abs{\cos}}\ \times\
+\underbrace{\sqrt3}_{\text{silencing}}\ \times\ \underbrace{\tfrac{\sqrt6}{2}\, p^{-1/2}}_{\text{bounded features vs } \norm{F}/g_F \sim p^{3/2}}
+\ =\ \frac{23.6}{\sqrt p},
+\]
+with finite-$K$ aliasing adding $1.08$ at $K = 8$. The ReLU attenuation is the fact that only the second $\phi$-harmonic, of weight
+$a_2 = 2/(3\pi)$, reaches the readout; the worst-case factor is $T(1)/(p/2) \to 4/(3\pi)$; silencing raises $\norm{(L,R)}^2$ from
+$p^2/2$ to $p(3p-4)/2$; and the last factor is the plain circuit's handicap, bounded clock features against a profile whose norm grows
+like $p^{3/2}$ while only its smallest gap counts. The per-fibre duplication ($p-1$ copies) is matched one for one by the plain
+circuit's $p$ value copies per coordinate, so both circuits have $\Theta(p^2)$ neurons and the duplication is not a relative factor;
+what it does is force the silencing. At $p = 11$, $K = 8$ the as-built gap of $20.8$ decomposes as $3.1$ (unit-limited margin)
+$\times\, 5.65$ (clock vs coordinate cost per margin: count $1.65$, per-neuron $0.63$, margin $5.0$) $\times$ the amortisation of the
+unit part over a margin of $20$ rather than $3.7$.
+
+\section{Cheaper silencing?}
+
+\paragraph{A smaller offset fails.} With $L = -\eta$ off the fibre and $R$ unchanged, an inactive neuron contributes
+$\sum_i \relu(\cos(v+\phi_i) - \eta)\cos(\theta + 2\phi_i) \approx \tfrac{K}{2}\, a_2(\eta)\cos(2v - \theta)$ with the exact coefficient
+\[
+a_2(\eta) = \frac{2}{3\pi}\,(1 - \eta^2)^{3/2},
+\]
+a spurious clock pointing at $b_z = 2\alpha b_y$. For $b_y = 0$ all $p-2$ inactive fibres are coherent and produce a Dirichlet spike of
+height $\sim \tfrac{K}{4} a_2(\eta)\, p(p-2)$ on $b_z = 0$; keeping it below $\gam_{\mathrm{clock}} \sim 4Kp/(9\pi^2)$ requires
+$1 - \eta^2 \lesssim (0.85/(p-2))^{2/3}$, so the admissible saving is $O(p^{-2/3})$ of the silencing cost. Brute force at $p = 11$:
+$\eta = 0.95$ saves $3\%$ of $\cost_{\mathrm{clock}}$ and cuts the clock margin from $3.69$ to $1.50$; $\eta = 0.9$ gives a negative margin.
+
+\paragraph{Splitting the constant works.} Put $L = \cos(u+\phi) + \beta$ on the fibre, $L = -(1-\beta)$ off it, $R = \cos(v+\phi) - \beta$.
+On the fibre $L + R$ is unchanged, off it $L + R = \cos(v+\phi) - 1 \le 0$, so every activation and the margin are identical, while
+\[
+\norm{(L,R)}^2 = p(p-2)(1-\beta)^2 + p\bigl(\tfrac12 + \beta^2\bigr) + p(p-1)\bigl(\tfrac12 + \beta^2\bigr)
+\]
+is minimised at $\beta^{*} = \tfrac{p-2}{2(p-1)} \approx \tfrac12$ with value $\tfrac{p^2(2p-3)}{2(p-1)} \sim p^2$ against $\tfrac{p(3p-4)}{2} \sim \tfrac{3p^2}{2}$,
+a cost factor $\to \sqrt{2/3} = 0.816$ ($0.849$ at $p = 11$, brute force $0.8489$). This is optimal within exact silencing of an exact clock:
+the constant $1$ must be paid on about $p^2$ entries of $L$ or of $R$, and $(1-\beta)^2 + \beta^2 \ge \tfrac12$. It moves the clock's constant
+to $0.127\, p^{-3}$ and the crossover to $p \approx 370$, not the exponents.
+
+\section{The duplication cannot be avoided}
+
+The twisted neuron needs its $y$-side feature at frequency $k a_x$, and $R(y)$ cannot see $a_x$; the only way to get $a_x$-dependence into
+$L(x) + R(y)$ is one copy of $R$ per value of $a_x$, and each copy must be silenced off its fibre because the ReLU is nonlinear (a zero
+$L$ off the fibre would still pass $\relu(R(y))$ through). Moving the twist to the $x$ side, $L = \cos(2\pi k b_x/(a_x p) + \phi)$,
+$R = \cos(2\pi k b_y/p + \phi)$, gives $u + v = 2\pi k b_{xy}/(a_x p)$, which the readout would have to undo with $a_x$; but $w$ depends on
+$z = xy$ only and $a_x$ is not a function of $z$. Representation-theoretically, the $(p-1)$-dimensional irrep is induced from a character
+of the translation subgroup, so each of its matrix coefficients is supported on a single fibre: any neuron reading an irrep feature of
+$x$ is fibre-local by construction, and the $p-1$ fibres are the $p-1$ rows of the representation matrix. The duplication is the price of
+the irrep being induced, not of this particular circuit.
+
+\section{What was verified}
+
+Everything above was checked numerically. The checking scripts are \texttt{affine\_margins\_check.py} and
+\texttt{affine\_margins\_split.py} in the repository, with their outputs under \texttt{results/affine}. Checked:
+the Fourier coefficients of $\relu(\cos t)$; the exact alias series \eqref{eq:SK} against the direct phase sum for
+$K \in \{3, 4, 6, 8, 12, 2000\}$; $a_2(\eta)$ and $T(1)$ in closed form and the minimiser $e = \pm 1$ for $p$ from $7$ to $101$;
+both circuits built exactly as specified and
+evaluated over all $\abs{G}^2$ input pairs and all outputs at $p = 7, 11, 13$, including the case A / case B minima separately, the
+$\abs{J} = p$ minimiser, the no-unit-part and unequal-scale variants, the worst single-frequency input, the $\eta < 1$ and split-constant
+variants, and the $K = 4$ collapse. Approximations appear only where labelled: alias-free ($K \to \infty$) clock margins, the case B lower
+bound at $\abs{J} = p$ (valid for $p \ge 7$, checked at $7, 11, 13$), and the large-$p$ leading orders.
+
+\end{document}

@@ -1,0 +1,114 @@
+=== Fourier coefficients of ReLU(cos t) ===
+  n=0: numeric +0.318310  formula +0.318310
+  n=1: numeric +0.500000  formula +0.500000
+  n=2: numeric +0.212207  formula +0.212207
+  n=3: numeric -0.000000  formula +0.000000
+  n=4: numeric -0.042441  formula -0.042441
+  n=5: numeric -0.000000  formula +0.000000
+  n=6: numeric +0.018189  formula +0.018189
+  n=7: numeric -0.000000  formula +0.000000
+  n=8: numeric -0.010105  formula -0.010105
+
+=== S_K closed form, K->inf (K=2000) and finite K vs alias series ===
+  K= 2000: max|direct - alias series| = 1.29e-04; max|direct - main term| = 6.091e-04 (c_K=424.4132)
+  K=    3: max|direct - alias series| = 3.18e-06; max|direct - main term| = 1.597e+00 (c_K=0.6366)
+  K=    4: max|direct - alias series| = 1.25e-05; max|direct - main term| = 8.768e-01 (c_K=0.8488)
+  K=    6: max|direct - alias series| = 1.00e-05; max|direct - main term| = 4.149e-01 (c_K=1.2732)
+  K=    8: max|direct - alias series| = 5.18e-05; max|direct - main term| = 2.514e-01 (c_K=1.6977)
+  K=   12: max|direct - alias series| = 5.43e-06; max|direct - main term| = 1.770e-01 (c_K=2.5465)
+
+=== a_2(eta) for ReLU(cos t - eta): formula (2/3pi)(1-eta^2)^{3/2} ===
+  eta=0: numeric 0.212207  formula 0.212207
+  eta=0.5: numeric 0.137832  formula 0.137832
+  eta=0.8: numeric 0.045837  formula 0.045837
+  eta=0.9: numeric 0.017575  formula 0.017575
+  eta=0.99: numeric 0.000596  formula 0.000596
+
+=== T(e) = sum_j cos(pi j/p)(1-cos(2 pi j e/p)); claim min at e=1, T(1)=(csc(pi/2p)+csc(3pi/2p))/4 ===
+  p=7: T(1)=1.52446 formula 1.52446  min_e T = 1.52446 at e=1; p/2=3.5; 2p/(3pi)=1.4854
+  p=11: T(1)=2.35848 formula 2.35848  min_e T = 2.35848 at e=1; p/2=5.5; 2p/(3pi)=2.3343
+  p=13: T(1)=2.77907 formula 2.77907  min_e T = 2.77907 at e=1; p/2=6.5; 2p/(3pi)=2.7587
+  p=31: T(1)=6.58687 formula 6.58687  min_e T = 6.58687 at e=1; p/2=15.5; 2p/(3pi)=6.5784
+  p=101: T(1)=21.43546 formula 21.43546  min_e T = 21.43546 at e=1; p/2=50.5; 2p/(3pi)=21.4329
+
+=== CIRCUIT 1 (plain coordinate) ===
+  p= 7 |J|= 1: gamma=  1.000 (same-a   1.00, diff-a   1.00) formula   1.00 | C=   1125.55 formula    1125.55 | gamma/C=0.8885e-3
+  p= 7 |J|= 2: gamma=  2.000 (same-a   2.00, diff-a   2.00) formula   2.00 | C=   1754.15 formula    1754.15 | gamma/C=1.1402e-3
+  p= 7 |J|= 3: gamma=  3.000 (same-a   3.00, diff-a   3.00) formula   3.00 | C=   2382.75 formula    2382.75 | gamma/C=1.2591e-3
+  p= 7 |J|= 6: gamma=  6.000 (same-a   6.00, diff-a  10.00) formula   6.00 | C=   4268.54 formula    4268.54 | gamma/C=1.4056e-3
+  p= 7 |J|= 7: gamma= 12.000 (same-a  12.00, diff-a  13.00) formula  12.00 | C=   4897.14 formula    4897.14 | gamma/C=2.4504e-3
+  p= 7 |J|= 2 NO unit part: gamma=1.000 (formula 1.000), C=1257.20, gamma/C=0.7954e-3
+  p= 7 |J|= 7 NO unit part: gamma=12.000 (formula 12.000), C=4400.19, gamma/C=2.7272e-3
+  p= 7 |J|=1 g_f=0.5: gamma=0.500 formula 0.500; C=877.1 formula 877.1
+  p= 7 |J|=1 g_f=2.0: gamma=1.000 formula 1.000; C=1622.5 formula 1622.5
+  p= 7 |J|=3 g_f=0.5: gamma=2.500 formula 2.500; C=2134.3 formula 2134.3
+  p= 7 |J|=3 g_f=2.0: gamma=3.000 formula 3.000; C=2879.7 formula 2879.7
+  p=7 |J|=p argmin: x=(a=1,b=0) y=(a=1,b=0) xy=(a=1,b=0) worst z=(a=1,b=1); (b_z-b_xy)/a_x mod p = 1
+  p=11 |J|= 1: gamma=  1.000 (same-a   1.00, diff-a   1.00) formula   1.00 | C=   6089.08 formula    6089.08 | gamma/C=0.1642e-3
+  p=11 |J|= 2: gamma=  2.000 (same-a   2.00, diff-a   2.00) formula   2.00 | C=   9352.21 formula    9352.21 | gamma/C=0.2139e-3
+  p=11 |J|= 5: gamma=  5.000 (same-a   5.00, diff-a   7.00) formula   5.00 | C=  19141.59 formula   19141.59 | gamma/C=0.2612e-3
+  p=11 |J|=10: gamma= 10.000 (same-a  10.00, diff-a  26.00) formula  10.00 | C=  35457.22 formula   35457.22 | gamma/C=0.2820e-3
+  p=11 |J|=11: gamma= 20.000 (same-a  20.00, diff-a  31.00) formula  20.00 | C=  38720.35 formula   38720.35 | gamma/C=0.5165e-3
+  p=11 |J|= 2 NO unit part: gamma=1.000 (formula 1.000), C=6526.25, gamma/C=0.1532e-3
+  p=11 |J|=11 NO unit part: gamma=20.000 (formula 20.000), C=35894.40, gamma/C=0.5572e-3
+  p=11 |J|=1 g_f=0.5: gamma=0.500 formula 0.500; C=4676.1 formula 4676.1
+  p=11 |J|=1 g_f=2.0: gamma=1.000 formula 1.000; C=8915.0 formula 8915.0
+  p=11 |J|=3 g_f=0.5: gamma=2.500 formula 2.500; C=11202.4 formula 11202.4
+  p=11 |J|=3 g_f=2.0: gamma=3.000 formula 3.000; C=15441.3 formula 15441.3
+  p=11 |J|=p argmin: x=(a=1,b=0) y=(a=1,b=0) xy=(a=1,b=0) worst z=(a=1,b=1); (b_z-b_xy)/a_x mod p = 1
+  p=13 |J|= 1: gamma=  1.000 (same-a   1.00, diff-a   1.00) formula   1.00 | C=  11228.98 formula   11228.98 | gamma/C=0.0891e-3
+  p=13 |J|= 2: gamma=  2.000 (same-a   2.00, diff-a   2.00) formula   2.00 | C=  17181.56 formula   17181.56 | gamma/C=0.1164e-3
+  p=13 |J|= 6: gamma=  6.000 (same-a   6.00, diff-a  10.00) formula   6.00 | C=  40991.88 formula   40991.88 | gamma/C=0.1464e-3
+  p=13 |J|=12: gamma= 12.000 (same-a  12.00, diff-a  37.00) formula  12.00 | C=  76707.37 formula   76707.37 | gamma/C=0.1564e-3
+  p=13 |J|=13: gamma= 24.000 (same-a  24.00, diff-a  43.00) formula  24.00 | C=  82659.95 formula   82659.95 | gamma/C=0.2903e-3
+  p=13 |J|= 2 NO unit part: gamma=1.000 (formula 1.000), C=11905.16, gamma/C=0.0840e-3
+  p=13 |J|=13 NO unit part: gamma=24.000 (formula 24.000), C=77383.55, gamma/C=0.3101e-3
+  p=13 |J|=1 g_f=0.5: gamma=0.500 formula 0.500; C=8590.8 formula 8590.8
+  p=13 |J|=1 g_f=2.0: gamma=1.000 formula 1.000; C=16505.4 formula 16505.4
+  p=13 |J|=3 g_f=0.5: gamma=2.500 formula 2.500; C=20495.9 formula 20495.9
+  p=13 |J|=3 g_f=2.0: gamma=3.000 formula 3.000; C=28410.5 formula 28410.5
+  p=13 |J|=p argmin: x=(a=1,b=0) y=(a=1,b=0) xy=(a=1,b=0) worst z=(a=1,b=1); (b_z-b_xy)/a_x mod p = 1
+
+=== CIRCUIT 2 (twisted clock) ===
+  p= 7 K= 4 nf=1: acc=0.286 gamma=-0.3517 clock=-0.3517 (fiber calc -0.3517; alias-free formula  0.0711) unit=1.000 | C_clock=    848.4 (formula     848.4) C_unit=   497.0 (formula    497.0) | gamma/C=-0.2614e-3 | rebalanced 1/(Cc/gc+Cu/gu)=0.0000e-3
+  p= 7 K= 6 nf=1: acc=1.000 gamma= 0.0666 clock= 0.0666 (fiber calc  0.0666; alias-free formula  0.1067) unit=1.000 | C_clock=   1272.5 (formula    1272.5) C_unit=   497.0 (formula    497.0) | gamma/C=0.0376e-3 | rebalanced 1/(Cc/gc+Cu/gu)=0.0510e-3
+  p= 7 K= 8 nf=1: acc=1.000 gamma= 0.1215 clock= 0.1215 (fiber calc  0.1215; alias-free formula  0.1422) unit=1.000 | C_clock=   1696.7 (formula    1696.7) C_unit=   497.0 (formula    497.0) | gamma/C=0.0554e-3 | rebalanced 1/(Cc/gc+Cu/gu)=0.0692e-3
+  p= 7 K=12 nf=1: acc=1.000 gamma= 0.2033 clock= 0.2033 (fiber calc  0.2033; alias-free formula  0.2133) unit=1.000 | C_clock=   2545.1 (formula    2545.1) C_unit=   497.0 (formula    497.0) | gamma/C=0.0668e-3 | rebalanced 1/(Cc/gc+Cu/gu)=0.0768e-3
+  p= 7 K= 8 nf=3: acc=1.000 gamma= 1.0000 clock= 2.3865 (fiber calc  2.3865; alias-free formula  2.5880) unit=1.000 | C_clock=   5090.2 (formula    5090.2) C_unit=   497.0 (formula    497.0) | gamma/C=0.1790e-3 | rebalanced 1/(Cc/gc+Cu/gu)=0.3802e-3
+  p= 7 K=12 nf=3: acc=1.000 gamma= 1.0000 clock= 3.7831 (fiber calc  3.7831; alias-free formula  3.8820) unit=1.000 | C_clock=   7635.2 (formula    7635.2) C_unit=   497.0 (formula    497.0) | gamma/C=0.1230e-3 | rebalanced 1/(Cc/gc+Cu/gu)=0.3976e-3
+  p=7 K=12 1-freq worst fiber input: b_x - b_y = 4 -> |cos(pi m/p)| = 0.2225, sin(pi/2p) = 0.2225
+  p=11 K= 4 nf=1: acc=0.180 gamma=-0.3515 clock=-0.3515 (fiber calc -0.3515; alias-free formula  0.0192) unit=1.000 | C_clock=   3746.5 (formula    3746.5) C_unit=  2826.0 (formula   2826.0) | gamma/C=-0.0535e-3 | rebalanced 1/(Cc/gc+Cu/gu)=0.0000e-3
+  p=11 K= 6 nf=1: acc=1.000 gamma= 0.0129 clock= 0.0129 (fiber calc  0.0129; alias-free formula  0.0288) unit=1.000 | C_clock=   5619.7 (formula    5619.7) C_unit=  2826.0 (formula   2826.0) | gamma/C=0.0015e-3 | rebalanced 1/(Cc/gc+Cu/gu)=0.0023e-3
+  p=11 K= 8 nf=1: acc=1.000 gamma= 0.0303 clock= 0.0303 (fiber calc  0.0303; alias-free formula  0.0384) unit=1.000 | C_clock=   7492.9 (formula    7492.9) C_unit=  2826.0 (formula   2826.0) | gamma/C=0.0029e-3 | rebalanced 1/(Cc/gc+Cu/gu)=0.0040e-3
+  p=11 K=12 nf=1: acc=1.000 gamma= 0.0539 clock= 0.0539 (fiber calc  0.0539; alias-free formula  0.0575) unit=1.000 | C_clock=  11239.4 (formula   11239.4) C_unit=  2826.0 (formula   2826.0) | gamma/C=0.0038e-3 | rebalanced 1/(Cc/gc+Cu/gu)=0.0047e-3
+  p=11 K= 8 nf=5: acc=1.000 gamma= 1.0000 clock= 3.6940 (fiber calc  3.6940; alias-free formula  4.0039) unit=1.000 | C_clock=  37464.7 (formula   37464.7) C_unit=  2826.0 (formula   2826.0) | gamma/C=0.0248e-3 | rebalanced 1/(Cc/gc+Cu/gu)=0.0771e-3
+  p=11 K=12 nf=5: acc=1.000 gamma= 1.0000 clock= 5.8546 (fiber calc  5.8546; alias-free formula  6.0058) unit=1.000 | C_clock=  56197.0 (formula   56197.0) C_unit=  2826.0 (formula   2826.0) | gamma/C=0.0169e-3 | rebalanced 1/(Cc/gc+Cu/gu)=0.0805e-3
+  p=11 K=12 1-freq worst fiber input: b_x - b_y = 5 -> |cos(pi m/p)| = 0.1423, sin(pi/2p) = 0.1423
+  p=13 K= 4 nf=1: acc=0.155 gamma=-0.3635 clock=-0.3635 (fiber calc -0.3635; alias-free formula  0.0117) unit=1.000 | C_clock=   6394.1 (formula    6394.1) C_unit=  5276.4 (formula   5276.4) | gamma/C=-0.0311e-3 | rebalanced 1/(Cc/gc+Cu/gu)=0.0000e-3
+  p=13 K= 6 nf=1: acc=1.000 gamma= 0.0061 clock= 0.0061 (fiber calc  0.0061; alias-free formula  0.0176) unit=1.000 | C_clock=   9591.1 (formula    9591.1) C_unit=  5276.4 (formula   5276.4) | gamma/C=0.0004e-3 | rebalanced 1/(Cc/gc+Cu/gu)=0.0006e-3
+  p=13 K= 8 nf=1: acc=1.000 gamma= 0.0177 clock= 0.0177 (fiber calc  0.0177; alias-free formula  0.0234) unit=1.000 | C_clock=  12788.2 (formula   12788.2) C_unit=  5276.4 (formula   5276.4) | gamma/C=0.0010e-3 | rebalanced 1/(Cc/gc+Cu/gu)=0.0014e-3
+  p=13 K=12 nf=1: acc=1.000 gamma= 0.0326 clock= 0.0326 (fiber calc  0.0326; alias-free formula  0.0352) unit=1.000 | C_clock=  19182.3 (formula   19182.3) C_unit=  5276.4 (formula   5276.4) | gamma/C=0.0013e-3 | rebalanced 1/(Cc/gc+Cu/gu)=0.0017e-3
+  p=13 K= 8 nf=6: acc=1.000 gamma= 1.0000 clock= 4.3531 (fiber calc  4.3531; alias-free formula  4.7179) unit=1.000 | C_clock=  76729.2 (formula   76729.2) C_unit=  5276.4 (formula   5276.4) | gamma/C=0.0122e-3 | rebalanced 1/(Cc/gc+Cu/gu)=0.0437e-3
+  p=13 K=12 nf=6: acc=1.000 gamma= 1.0000 clock= 6.8990 (fiber calc  6.8990; alias-free formula  7.0768) unit=1.000 | C_clock= 115093.8 (formula  115093.8) C_unit=  5276.4 (formula   5276.4) | gamma/C=0.0083e-3 | rebalanced 1/(Cc/gc+Cu/gu)=0.0455e-3
+  p=13 K=12 1-freq worst fiber input: b_x - b_y = 7 -> |cos(pi m/p)| = 0.1205, sin(pi/2p) = 0.1205
+
+=== silencing offset eta < 1, p=7, all freqs, K=8 ===
+  eta=1.00: clock margin   2.3865  acc 1.000  C_clock   5090.2 (formula   5090.2)
+  eta=0.95: clock margin   1.6832  acc 1.000  C_clock   4942.0 (formula   4942.0)
+  eta=0.90: clock margin   0.8082  acc 1.000  C_clock   4797.3 (formula   4797.3)
+  eta=0.80: clock margin  -0.9418  acc 0.878  C_clock   4519.2 (formula   4519.2)
+  eta=0.50: clock margin  -6.1918  acc 0.878  C_clock   3805.1 (formula   3805.1)
+  eta=0.00: clock margin -14.9418  acc 0.755  C_clock   3266.3 (formula   3266.3)
+  p=11 eta=1.00: clock margin   3.6940  C_clock  37464.7; a_2(eta)=0.0000, spike bound K a_2 p(p-2)/4 = 0.000
+  p=11 eta=0.95: clock margin   1.4951  C_clock  36313.3; a_2(eta)=0.0065, spike bound K a_2 p(p-2)/4 = 1.279
+  p=11 eta=0.90: clock margin  -0.9799  C_clock  35186.2; a_2(eta)=0.0176, spike bound K a_2 p(p-2)/4 = 3.480
+  p=11 eta=0.80: clock margin  -5.9299  C_clock  33014.7; a_2(eta)=0.0458, spike bound K a_2 p(p-2)/4 = 9.076
+
+=== large-p table of analytic gamma/C ===
+  p=    7: plain|J|=1 8.885e-04  plain|J|=p 2.450e-03 (sqrt6 p^-3.5 = 2.699e-03)  twisted-all as built 1.790e-04  rebalanced 4.059e-04  clock-only 5.084e-04 (0.104 p^-3 = 3.032e-04)  twisted-1freq 6.484e-05
+  p=   11: plain|J|=1 1.642e-04  plain|J|=p 5.165e-04 (sqrt6 p^-3.5 = 5.549e-04)  twisted-all as built 2.482e-05  rebalanced 8.208e-05  clock-only 1.069e-04 (0.104 p^-3 = 7.813e-05)  twisted-1freq 3.717e-06
+  p=   13: plain|J|=1 8.906e-05  plain|J|=p 2.903e-04 (sqrt6 p^-3.5 = 3.092e-04)  twisted-all as built 1.219e-05  rebalanced 4.643e-05  clock-only 6.149e-05 (0.104 p^-3 = 4.734e-05)  twisted-1freq 1.298e-06
+  p=   31: plain|J|=1 3.911e-06  plain|J|=p 1.434e-05 (sqrt6 p^-3.5 = 1.477e-05)  twisted-all as built 3.324e-07  rebalanced 2.614e-06  clock-only 3.878e-06 (0.104 p^-3 = 3.491e-06)  twisted-1freq 5.554e-09
+  p=  101: plain|J|=1 6.018e-08  plain|J|=p 2.343e-07 (sqrt6 p^-3.5 = 2.366e-07)  twisted-all as built 2.797e-09  rebalanced 5.604e-08  clock-only 1.042e-07 (0.104 p^-3 = 1.009e-07)  twisted-1freq 3.353e-12
+  p=  547: plain|J|=1 1.605e-10  plain|J|=p 6.387e-10 (sqrt6 p^-3.5 = 6.399e-10)  twisted-all as built 3.211e-12  rebalanced 2.139e-10  clock-only 6.391e-10 (0.104 p^-3 = 6.354e-10)  twisted-1freq 7.584e-17
+  p= 1009: plain|J|=1 1.880e-11  plain|J|=p 7.499e-11 (sqrt6 p^-3.5 = 7.507e-11)  twisted-all as built 2.773e-13  rebalanced 2.746e-11  clock-only 1.016e-10 (0.104 p^-3 = 1.012e-10)  twisted-1freq 1.522e-18

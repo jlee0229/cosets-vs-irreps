@@ -1,0 +1,15 @@
+=== split silencing: L_on = cos+beta, L_off = -(1-beta), R = cos-beta ===
+  p=7 beta=0.0000: clock margin 2.3865  C_clock 5090.2 (formula 5090.2; beta=0 ref 5090.2)  ratio to beta=0: 1.0000  sqrt((2p-3)/(3p-4)*p/(p-1))=0.8689
+  p=7 beta=0.5000: clock margin 2.3865  C_clock 4451.2 (formula 4451.2; beta=0 ref 5090.2)  ratio to beta=0: 0.8745  sqrt((2p-3)/(3p-4)*p/(p-1))=0.8689
+  p=7 beta=0.4167: clock margin 2.3865  C_clock 4422.6 (formula 4422.6; beta=0 ref 5090.2)  ratio to beta=0: 0.8689  sqrt((2p-3)/(3p-4)*p/(p-1))=0.8689
+  p=7 beta=1.0000: clock margin 2.3865  C_clock 5657.4 (formula 5657.4; beta=0 ref 5090.2)  ratio to beta=0: 1.1114  sqrt((2p-3)/(3p-4)*p/(p-1))=0.8689
+  p=7 1 freq beta=0.5: clock margin 0.1215 C_clock 1483.7
+  p=11 beta=0.0000: clock margin 3.6940  C_clock 37464.7 (formula 37464.7; beta=0 ref 37464.7)  ratio to beta=0: 1.0000  sqrt((2p-3)/(3p-4)*p/(p-1))=0.8489
+  p=11 beta=0.5000: clock margin 3.6940  C_clock 31881.0 (formula 31881.0; beta=0 ref 37464.7)  ratio to beta=0: 0.8510  sqrt((2p-3)/(3p-4)*p/(p-1))=0.8489
+  p=11 beta=0.4500: clock margin 3.6940  C_clock 31805.0 (formula 31805.0; beta=0 ref 37464.7)  ratio to beta=0: 0.8489  sqrt((2p-3)/(3p-4)*p/(p-1))=0.8489
+  p=11 beta=1.0000: clock margin 3.6940  C_clock 39965.0 (formula 39965.0; beta=0 ref 37464.7)  ratio to beta=0: 1.0667  sqrt((2p-3)/(3p-4)*p/(p-1))=0.8489
+  p=11 1 freq beta=0.5: clock margin 0.0303 C_clock 6376.2
+
+=== K=4: logit on a fiber is (function of u+v) * cos(theta) ===
+  max over (bx,by) of spread of Lam/cos(theta) over bz: 2.1316282072803006e-14
+  argmax b_z values taken for K=4: [0, 5, 6]
